@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import * as CryptoJS from 'crypto-js';
+const PRIVATE_KEY = 'stock-bar-midway-service-barretem';
 
 const formatNum = (n: number) => {
   const m = n.toString();
@@ -60,4 +62,25 @@ export const formatDate = (val: Date | string | undefined, seperator = '-') => {
   const day = date.getDate();
 
   return [year, month, day].map(formatNum).join(seperator);
+};
+
+export const decryptData = data => {
+  const bytes  = CryptoJS.AES.decrypt(data.data, PRIVATE_KEY);
+  data.data = bytes.toString(CryptoJS.enc.Utf8);
+  if (data.data && typeof data.data === 'string') {
+    try {
+      const obj = JSON.parse(data.data);
+      if (typeof obj === 'object' && obj) {
+        return {
+          ...data,
+          data: obj,
+        };
+      } else {
+        return data;
+      }
+    } catch (e) {
+       return data;
+    }
+  }
+  return data;
 };

@@ -3,7 +3,7 @@ import Axios from 'axios';
 
 import { GET } from '../utils/request';
 import { SINA_SERVICE_URL } from '../config/index';
-import { randHeader, showMessage } from '../utils/index';
+import { randHeader, showMessage, decryptData } from '../utils/index';
 
 const PREFIX = `${SINA_SERVICE_URL}/frontend-node-plugin`;
 
@@ -14,7 +14,7 @@ const PREFIX = `${SINA_SERVICE_URL}/frontend-node-plugin`;
  */
 export const getStockDetailByIds = (ids: string): Promise<any> => {
   const url = `${PREFIX}/stock/getRealTimeData?codesStr=${ids}`;
-  return Axios.get(url).then(res => res.data);
+  return Axios.get(url).then(res => decryptData(res.data));
 };
 
 export const getHolidayDataByDate = async (date: string) => {

@@ -24,10 +24,13 @@ export function activate(context: vscode.ExtensionContext) {
   statusBar.refresh();
 	const currentDay = formatDate(new Date());
 	getHolidayDataByDate(currentDay).then((res) => {
-		if (!res.holiday) {
+		if (!res.holiday && ![6, 7].includes(res.type.week)) {
 			// 非节假日开启定时查询
 			loopTimer = setInterval(() => {
-  			statusBar.refresh();
+				const hour = new Date().getHours();
+				if ((hour >= 9 && hour < 12) || (hour >= 13 && hour < 15)) {
+					statusBar.refresh();
+				}
 			}, 10000);
 		}
 	});
